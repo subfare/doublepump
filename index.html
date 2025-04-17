@@ -61,10 +61,13 @@
 
     .pop-up {
       position: absolute;
-      font-size: 3rem;
-      color: #ff4081;
       z-index: 10;
       animation: popUpAnimation 1s ease-in-out;
+    }
+
+    .pop-up img {
+      width: 50px;
+      height: 50px;
     }
 
     .crazy {
@@ -100,12 +103,12 @@
   </header>
 
   <button class="pump-button" onclick="pumpIt()" id="pumpBtn">
-    <img src="https://pbs.twimg.com/media/DWVNjKHWsAAY3kc.png" alt="Pump Shotgun" id="pumpImg">
+    <img src="https://files.catbox.moe/2th9zq.png" alt="Pump Shotgun" id="pumpImg">
   </button>
 
   <!-- Add images here -->
-  <img id="bgImage1" class="bg-image" src="https://cdn-0001.qstv.on.epicgames.com/UQWlvqUBQbkJTAnbkO/image/landscape_comp.jpeg" alt="Background 1">
-  <img id="bgImage2" class="bg-image" src="https://cdn-0001.qstv.on.epicgames.com/uchiZtqsHVUhisNUxu/image/landscape_comp.jpeg" alt="Background 2">
+  <img id="bgImage1" class="bg-image" src="https://files.catbox.moe/kw3nu3.png" alt="Background 1">
+  <img id="bgImage2" class="bg-image" src="https://files.catbox.moe/kw3nu3.png" alt="Background 2">
 
   <div class="counter" id="pumpCounter">Pumps Pulled: 0</div>
 
@@ -146,8 +149,8 @@
       // Play pump sound effect more frequently
       pumpAudio.play();
 
-      // Pop-up text after each click
-      showPopUp("+1");
+      // Pop-up image after each click
+      showPopUp();
 
       // CHAOS MILESTONES
       if (pumpCount === 10) {
@@ -219,12 +222,16 @@
       }
     }
 
-    function showPopUp(text) {
+    function showPopUp() {
       const popUp = document.createElement("div");
       popUp.classList.add("pop-up");
-      popUp.innerText = text;
-      
-      // Randomly position the pop-up text
+
+      // Add the image in place of the text
+      const popUpImage = document.createElement("img");
+      popUpImage.src = "https://files.catbox.moe/wq9glf.png";
+      popUp.appendChild(popUpImage);
+
+      // Randomly position the pop-up image
       const randomX = Math.random() * window.innerWidth;
       const randomY = Math.random() * window.innerHeight;
       popUp.style.left = randomX + "px";
