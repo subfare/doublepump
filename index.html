@@ -1,47 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>double pump</title>
-
-  <!-- Favicon (icon in tab) -->
-  <link rel="icon" href="https://files.catbox.moe/2th9zq.png" type="image/png" />
-
-  <!-- Open Graph (for link previews on Discord, social, etc.) -->
-  <meta property="og:title" content="double pump" />
-  <meta property="og:description" content="who doesnt love double pump" />
-  <meta property="og:image" content="https://files.catbox.moe/kibs7q.png" />
-  <meta property="og:type" content="website" />
-
-  <style>
-    body {
-      margin: 0;
-      background-color: #000;
-      color: white;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-      font-size: 2rem;
-    }
-
-    img {
-      max-width: 90%;
-      height: auto;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Double Pump Reloaded: CHAOS MODE</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <h1>"double pump"</h1>
-  <img src="your-image.png" alt="Centered Image" />
+<body id="body">
+
+  <header>
+    <h1 id="main-title">DOUBLE PUMP RELOADED</h1>
+  </header>
+
+  <button class="pump-button" onclick="pumpIt()" id="pumpBtn">
+    <img src="https://pbs.twimg.com/media/DWVNjKHWsAAY3kc.png" alt="Pump Shotgun" id="pumpImg">
+  </button>
+  
+  <div class="counter" id="pumpCounter">Pumps Pulled: 0</div>
+
+  <div id="pumpSound">
+    <audio id="pumpAudio" src="https://files.catbox.moe/gy0tab.mp3"></audio>
+    <audio id="explosionAudio" src="https://files.catbox.moe/zqow89.mp3"></audio>
+    <audio id="bassAudio" src="https://files.catbox.moe/vxyydq.mp3"></audio>
+  </div>
+
+  <div id="thanks">Thanks for playing!</div>
+
+  <script src="script.js"></script>
 </body>
 </html>
-
