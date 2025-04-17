@@ -18,7 +18,6 @@ const bgImage2 = document.getElementById("bgImage2");
 const initialBackground = 'https://cdn-0001.qstv.on.epicgames.com/UQWlvqUBQbkJTAnbkO/image/landscape_comp.jpeg';
 const changedBackground = 'https://cdn-0001.qstv.on.epicgames.com/uchiZtqsHVUhisNUxu/image/landscape_comp.jpeg';
 
-// Function to pump
 function pumpIt() {
   pumpCount++;
   counter.innerText = "Pumps Pulled: " + pumpCount;
@@ -88,4 +87,45 @@ function pumpIt() {
     title.innerText = "INSANE MODE ACTIVATED!!";
     body.style.filter = "invert(1) brightness(2) saturate(10)";
     setInterval(() => {
-      body.style.background = `hsl(${Math.random() * 360
+      body.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+    }, 500);
+  }
+
+  if (pumpCount === 500) {
+    // Remove everything and show black screen with text
+    body.style.backgroundColor = "black";
+    body.innerHTML = "<div id='thanks'>Thanks for playing!</div>";
+  }
+}
+
+function showPopUp(text) {
+  const popUp = document.createElement("div");
+  popUp.classList.add("pop-up");
+  popUp.innerText = text;
+  
+  // Randomly position the pop-up text
+  const randomX = Math.random() * window.innerWidth;
+  const randomY = Math.random() * window.innerHeight;
+  popUp.style.left = randomX + "px";
+  popUp.style.top = randomY + "px";
+
+  document.body.appendChild(popUp);
+
+  setTimeout(() => {
+    popUp.style.opacity = 0;
+  }, 3000); // Pop-up disappears after 3 seconds
+
+  setTimeout(() => {
+    document.body.removeChild(popUp);
+  }, 3000);
+}
+
+// Apply the hue effect to the background images
+function applyHueEffect() {
+  let hueValue = 0;
+  setInterval(() => {
+    hueValue = (hueValue + 10) % 360;
+    bgImage1.style.filter = `hue-rotate(${hueValue}deg)`;
+    bgImage2.style.filter = `hue-rotate(${hueValue}deg)`;
+  }, 500); // Change hue every 0.5 seconds
+}
