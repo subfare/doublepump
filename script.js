@@ -10,6 +10,10 @@ const pumpAudio = document.getElementById("pumpAudio");
 const explosionAudio = document.getElementById("explosionAudio");
 const bassAudio = document.getElementById("bassAudio");
 
+// Background images
+const bgImage1 = document.getElementById("bgImage1");
+const bgImage2 = document.getElementById("bgImage2");
+
 // Initial background image URL
 const initialBackground = 'https://cdn-0001.qstv.on.epicgames.com/UQWlvqUBQbkJTAnbkO/image/landscape_comp.jpeg';
 const changedBackground = 'https://cdn-0001.qstv.on.epicgames.com/uchiZtqsHVUhisNUxu/image/landscape_comp.jpeg';
@@ -44,8 +48,8 @@ function pumpIt() {
 
   if (pumpCount === 100) {
     // Change background image at 100 clicks
-    body.style.backgroundImage = `url('${changedBackground}')`;
-    body.style.transition = "background 0.5s ease";
+    bgImage1.src = changedBackground;
+    bgImage2.src = changedBackground;
     applyHueEffect();
   }
 
@@ -116,11 +120,12 @@ function showPopUp(text) {
   }, 3000);
 }
 
-// Apply the hue effect to the background image
+// Apply the hue effect to the background images
 function applyHueEffect() {
   let hueValue = 0;
   setInterval(() => {
     hueValue = (hueValue + 10) % 360;
-    body.style.filter = `hue-rotate(${hueValue}deg)`;
+    bgImage1.style.filter = `hue-rotate(${hueValue}deg)`;
+    bgImage2.style.filter = `hue-rotate(${hueValue}deg)`;
   }, 500); // Change hue every 0.5 seconds
 }
