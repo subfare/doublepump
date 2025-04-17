@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Double Pump Insanity</title>
+  <title>double pump</title>
   <style>
     html, body {
       margin: 0;
@@ -76,9 +76,58 @@
       pointer-events: none;
       user-select: none;
     }
+
+    #usernameOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      color: white;
+    }
+
+    #usernameInput {
+      padding: 10px;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    #leaderboard {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 16px;
+      z-index: 5;
+      max-width: 200px;
+    }
+
+    #leaderboard h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
+
+  <div id="usernameOverlay">
+    <h2>ENTER YOUR NAME:</h2>
+    <input type="text" id="usernameInput" placeholder="Your name">
+    <button onclick="startGame()">START DOUBLE PUMPING</button>
+  </div>
+
+  <div id="leaderboard">
+    <h3>Leaderboard</h3>
+    <ul id="leaderboardList"></ul>
+  </div>
 
   <img id="bg1" class="background-img" src="https://files.catbox.moe/w09iyt.png">
   <img id="bg2" class="background-img" src="https://files.catbox.moe/6i54ti.png" style="display: none;">
@@ -88,7 +137,7 @@
     <img src="https://files.catbox.moe/2th9zq.png" alt="Pump Shotgun" id="pumpImg">
   </div>
 
-  <div class="counter" id="pumpCounter">Pumps Pulled: 0</div>
+  <div class="counter" id="pumpCounter">PUMPS PULLED: 0</div>
 
   <audio id="sound-pump" src="https://files.catbox.moe/gy0tab.mp3"></audio>
   <audio id="sound-explosion" src="https://files.catbox.moe/zqow89.mp3"></audio>
@@ -97,6 +146,9 @@
 
   <script>
     let count = 0;
+    let username = '';
+    let wowPlayed = false;
+
     const pumpCounter = document.getElementById('pumpCounter');
     const bg1 = document.getElementById('bg1');
     const bg2 = document.getElementById('bg2');
@@ -105,7 +157,13 @@
     const soundBass = document.getElementById('sound-bass');
     const soundWow = document.getElementById('sound-wow');
 
-    let wowPlayed = false;
+    function startGame() {
+      const input = document.getElementById('usernameInput');
+      if (!input.value.trim()) return alert("Please enter your name.");
+      username = input.value.trim();
+      document.getElementById('usernameOverlay').style.display = 'none';
+      updateLeaderboard();
+    }
 
     function pumpIt() {
       count++;
@@ -134,6 +192,9 @@
           wowPlayed = true;
         }
       }
+
+      saveScore();
+      updateLeaderboard();
     }
 
     function spawnPopup() {
@@ -144,6 +205,21 @@
       popup.style.top = `${Math.random() * 80 + 10}%`;
       document.body.appendChild(popup);
       setTimeout(() => popup.remove(), 1000);
+    }
+
+    function saveScore() {
+      let data = JSON.parse(localStorage.getItem("doublePumpLeaderboard") || "{}");
+      if (!data[username] || data[username] < count) {
+        data[username] = count;
+        localStorage.setItem("doublePumpLeaderboard", JSON.stringify(data));
+      }
+    }
+
+    function updateLeaderboard() {
+      const data = JSON.parse(localStorage.getItem("doublePumpLeaderboard") || "{}");
+      const sorted = Object.entries(data).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      const list = document.getElementById('leaderboardList');
+      list.innerHTML = sorted.map(([name, score]) => `<li>${name}: ${score}</li>`).join("");
     }
 
     // Random pump sound every 3 seconds
