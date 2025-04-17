@@ -2,262 +2,157 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Double Pump Reloaded: CHAOS MODE</title>
+  <title>Double Pump Insanity</title>
   <style>
-    * {
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
+      overflow: hidden;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      user-select: none;
+      touch-action: manipulation;
+      background: black;
     }
 
     body {
-      font-family: 'Burbank Big Condensed', Impact, sans-serif;
-      height: 100vh;
-      color: white;
-      text-align: center;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      position: relative;
-      overflow: hidden;
-      user-select: none;
-      transition: filter 0.5s ease;
+      justify-content: center;
     }
 
-    header {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1;
+    .background-img {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -2;
+      object-fit: cover;
+      transition: filter 0.2s linear;
     }
 
-    h1 {
-      font-size: 4rem;
-      text-shadow: 2px 2px #000;
-      margin-bottom: 20px;
-    }
-
-    .pump-button {
-      margin-top: 2rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      position: relative;
-      touch-action: none; /* Prevents zooming or pinch gestures */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: -1;
     }
 
     .pump-button img {
-      width: 150px;
-      transition: transform 0.2s ease;
+      width: 200px;
+      transition: transform 0.1s ease;
+      touch-action: manipulation;
+      filter: drop-shadow(0 0 15px #fff);
+      animation: pulseGlow 2s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0% { filter: drop-shadow(0 0 5px #fff); }
+      50% { filter: drop-shadow(0 0 25px #fff); }
+      100% { filter: drop-shadow(0 0 5px #fff); }
+    }
+
+    .pump-button:active img {
+      transform: scale(0.95);
     }
 
     .counter {
-      margin-top: 1rem;
-      font-size: 1.5rem;
-    }
-
-    .pop-up {
-      position: absolute;
-      z-index: 10;
-      animation: popUpAnimation 1s ease-in-out;
-    }
-
-    .pop-up img {
-      width: 50px;
-      height: 50px;
-    }
-
-    .crazy {
-      animation: hueShift 3s infinite linear, saturationShift 2s infinite linear;
-    }
-
-    .bg-image {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      object-fit: cover;
-      z-index: -1;
-      transition: filter 1s ease;
-    }
-
-    #thanks {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 3rem;
+      margin-top: 20px;
+      font-size: 24px;
       color: white;
-      display: none;
+      text-align: center;
+      filter: drop-shadow(0 0 10px white);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .popup-img {
+      position: absolute;
+      width: 40px;
+      pointer-events: none;
+      user-select: none;
     }
   </style>
 </head>
-<body id="body">
+<body>
 
-  <header>
-    <h1 id="main-title">DOUBLE PUMP RELOADED</h1>
-  </header>
+  <img id="bg1" class="background-img" src="https://files.catbox.moe/w09iyt.png">
+  <img id="bg2" class="background-img" src="https://files.catbox.moe/6i54ti.png" style="display: none;">
+  <div class="overlay"></div>
 
-  <button class="pump-button" onclick="pumpIt()" id="pumpBtn">
+  <div class="pump-button" onclick="pumpIt()">
     <img src="https://files.catbox.moe/2th9zq.png" alt="Pump Shotgun" id="pumpImg">
-  </button>
-
-  <!-- Add images here -->
-  <img id="bgImage1" class="bg-image" src="https://files.catbox.moe/kw3nu3.png" alt="Background 1">
-  <img id="bgImage2" class="bg-image" src="https://files.catbox.moe/kw3nu3.png" alt="Background 2">
+  </div>
 
   <div class="counter" id="pumpCounter">Pumps Pulled: 0</div>
 
-  <div id="pumpSound">
-    <audio id="pumpAudio" src="https://files.catbox.moe/gy0tab.mp3"></audio>
-    <audio id="explosionAudio" src="https://files.catbox.moe/zqow89.mp3"></audio>
-    <audio id="bassAudio" src="https://files.catbox.moe/vxyydq.mp3"></audio>
-  </div>
-
-  <div id="thanks">Thanks for playing!</div>
+  <audio id="sound-pump" src="https://files.catbox.moe/gy0tab.mp3"></audio>
+  <audio id="sound-explosion" src="https://files.catbox.moe/zqow89.mp3"></audio>
+  <audio id="sound-bass" src="https://files.catbox.moe/vxyydq.mp3"></audio>
+  <audio id="sound-wow" src="https://files.catbox.moe/ggqlcl.mp3"></audio>
 
   <script>
-    let pumpCount = 0;
-    const body = document.getElementById("body");
-    const pumpImg = document.getElementById("pumpImg");
-    const title = document.getElementById("main-title");
-    const counter = document.getElementById("pumpCounter");
-    const thanksMessage = document.getElementById("thanks");
+    let count = 0;
+    const pumpCounter = document.getElementById('pumpCounter');
+    const bg1 = document.getElementById('bg1');
+    const bg2 = document.getElementById('bg2');
+    const soundPump = document.getElementById('sound-pump');
+    const soundExplosion = document.getElementById('sound-explosion');
+    const soundBass = document.getElementById('sound-bass');
+    const soundWow = document.getElementById('sound-wow');
 
-    // Audio elements
-    const pumpAudio = document.getElementById("pumpAudio");
-    const explosionAudio = document.getElementById("explosionAudio");
-    const bassAudio = document.getElementById("bassAudio");
+    let wowPlayed = false;
 
-    // Background images
-    const bgImage1 = document.getElementById("bgImage1");
-    const bgImage2 = document.getElementById("bgImage2");
-
-    // Initial background image URL
-    const initialBackground = 'https://cdn-0001.qstv.on.epicgames.com/UQWlvqUBQbkJTAnbkO/image/landscape_comp.jpeg';
-    const changedBackground = 'https://cdn-0001.qstv.on.epicgames.com/uchiZtqsHVUhisNUxu/image/landscape_comp.jpeg';
-
-    // Function to pump
     function pumpIt() {
-      pumpCount++;
-      counter.innerText = "Pumps Pulled: " + pumpCount;
+      count++;
+      pumpCounter.innerText = `Pumps Pulled: ${count}`;
+      soundPump.currentTime = 0;
+      soundPump.play();
 
-      // Play pump sound effect more frequently
-      pumpAudio.play();
+      // Enhanced mobile vibration
+      if (navigator.vibrate) navigator.vibrate([30, 20, 30]);
 
-      // Pop-up image after each click
-      showPopUp();
+      spawnPopup();
 
-      // CHAOS MILESTONES
-      if (pumpCount === 10) {
-        alert("Nice warm-up 😎");
-      }
+      const hue = (count * 10) % 360;
+      const effects = `hue-rotate(${hue}deg) saturate(2) invert(${count % 2})`;
+      document.body.style.filter = effects;
+      bg1.style.filter = effects;
+      bg2.style.filter = effects;
 
-      if (pumpCount === 25) {
-        body.classList.add("crazy");
-      }
-
-      if (pumpCount === 50) {
-        alert("YOU'RE CRACKED 🔥");
-        title.classList.add("shaky");
-      }
-
-      if (pumpCount === 75) {
-        document.body.style.animation = "shake 0.2s infinite";
-      }
-
-      if (pumpCount === 100) {
-        // Change background image at 100 clicks
-        bgImage1.src = changedBackground;
-        bgImage2.src = changedBackground;
-        applyHueEffect();
-      }
-
-      if (pumpCount === 150) {
-        explosionAudio.play();
-        document.body.style.transform = "rotate(5deg)";
-        setTimeout(() => {
-          document.body.style.transform = "rotate(0)";
-        }, 1000);
-      }
-
-      if (pumpCount === 200) {
-        // Final INSANE Effect
-        alert("💥💥💥 FINAL CHAOS UNLEASHED 💥💥💥");
-        title.innerText = "INSANE MODE ACTIVATED!!";
-        body.style.filter = "invert(1) brightness(2) saturate(10)";
-        setInterval(() => {
-          body.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        }, 500);
-      }
-
-      if (pumpCount === 250) {
-        title.classList.add("glitch");
-        pumpImg.style.transition = "all 0.1s";
-        setInterval(() => {
-          const size = 100 + Math.random() * 50;
-          pumpImg.style.width = size + "px";
-        }, 100);
-      }
-
-      if (pumpCount === 300) {
-        bassAudio.play();
-        // Final Chaos Alert
-        alert("💥💥💥 FINAL CHAOS UNLEASHED 💥💥💥");
-        title.innerText = "INSANE MODE ACTIVATED!!";
-        body.style.filter = "invert(1) brightness(2) saturate(10)";
-        setInterval(() => {
-          body.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        }, 500);
-      }
-
-      if (pumpCount === 500) {
-        // Remove everything and show black screen with text
-        body.style.backgroundColor = "black";
-        body.innerHTML = "<div id='thanks'>Thanks for playing!</div>";
+      if (count === 50) soundExplosion.play();
+      if (count === 100) {
+        bg1.style.display = 'none';
+        bg2.style.display = 'block';
+        soundBass.play();
+        if (!wowPlayed) {
+          soundWow.play();
+          wowPlayed = true;
+        }
       }
     }
 
-    function showPopUp() {
-      const popUp = document.createElement("div");
-      popUp.classList.add("pop-up");
-
-      // Add the image in place of the text
-      const popUpImage = document.createElement("img");
-      popUpImage.src = "https://files.catbox.moe/wq9glf.png";
-      popUp.appendChild(popUpImage);
-
-      // Randomly position the pop-up image
-      const randomX = Math.random() * window.innerWidth;
-      const randomY = Math.random() * window.innerHeight;
-      popUp.style.left = randomX + "px";
-      popUp.style.top = randomY + "px";
-
-      document.body.appendChild(popUp);
-
-      setTimeout(() => {
-        popUp.style.opacity = 0;
-      }, 3000); // Pop-up disappears after 3 seconds
-
-      setTimeout(() => {
-        document.body.removeChild(popUp);
-      }, 3000);
+    function spawnPopup() {
+      const popup = document.createElement('img');
+      popup.src = "https://files.catbox.moe/y2spsg.png";
+      popup.className = 'popup-img';
+      popup.style.left = `${Math.random() * 80 + 10}%`;
+      popup.style.top = `${Math.random() * 80 + 10}%`;
+      document.body.appendChild(popup);
+      setTimeout(() => popup.remove(), 1000);
     }
 
-    // Apply the hue effect to the background images
-    function applyHueEffect() {
-      let hueValue = 0;
-      setInterval(() => {
-        hueValue = (hueValue + 10) % 360;
-        bgImage1.style.filter = `hue-rotate(${hueValue}deg)`;
-        bgImage2.style.filter = `hue-rotate(${hueValue}deg)`;
-      }, 500); // Change hue every 0.5 seconds
-    }
+    // Random pump sound every 3 seconds
+    setInterval(() => {
+      if (Math.random() < 0.5) {
+        soundPump.currentTime = 0;
+        soundPump.play();
+      }
+    }, 3000);
   </script>
-
 </body>
 </html>
